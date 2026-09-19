@@ -1,15 +1,19 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Sonic Mania Plus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonic Mania Plus - ELMEX34YT</title>
 
     <style>
         html, body {
             margin: 0;
+            padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
+            background: black;
         }
 
         iframe {
@@ -17,10 +21,47 @@
             height: 100%;
             border: none;
         }
+
+        #fullscreen {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            padding: 10px 14px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: black;
+            color: white;
+            opacity: 0.8;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
-    <iframe src="https://ext.minijuegosgratis.com/sonic-m-plus/index.html"></iframe>
+
+    <button id="fullscreen">⛶</button>
+
+    <iframe
+        id="game"
+        src="https://ext.minijuegosgratis.com/sonic-m-plus/index.html"
+        allowfullscreen>
+    </iframe>
+
+    <script>
+        const boton = document.getElementById("fullscreen");
+        const juego = document.getElementById("game");
+
+        boton.addEventListener("click", function () {
+            if (juego.requestFullscreen) {
+                juego.requestFullscreen();
+            } else if (juego.webkitRequestFullscreen) {
+                juego.webkitRequestFullscreen();
+            }
+        });
+    </script>
+
 </body>
 </html>
+```
