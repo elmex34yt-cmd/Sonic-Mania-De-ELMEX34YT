@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Sonic Mania Plus - ELMEX34YT</title>
 
     <style>
@@ -16,57 +17,108 @@
             background: black;
         }
 
-        iframe {
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: black;
+        }
+
+        #game {
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        /* Botón de pantalla completa */
+        /* BOTÓN PANTALLA COMPLETA */
         #fullscreen {
-            position: fixed;
+            position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 9999;
+            z-index: 10000;
+
             padding: 10px 14px;
             font-size: 20px;
+
             border: none;
             border-radius: 8px;
-            background: black;
+
+            background: rgba(0, 0, 0, 0.75);
             color: white;
-            opacity: 0.8;
+
+            cursor: pointer;
         }
 
-        /* CONTROLES MÓVILES */
+        /* BOTÓN MOSTRAR/OCULTAR CONTROLES */
+        #toggle-controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10000;
+
+            padding: 10px 14px;
+            font-size: 16px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+
+            cursor: pointer;
+        }
+
+        /* CONTROLES */
         #controls {
-            position: fixed;
+            position: absolute;
+
             bottom: 20px;
             left: 20px;
             right: 20px;
+
             z-index: 9999;
-            display: flex;
+
+            display: none;
+
             justify-content: space-between;
             align-items: flex-end;
+
             pointer-events: none;
         }
 
         .control {
             width: 60px;
             height: 60px;
+
             margin: 5px;
+
             border: 2px solid white;
             border-radius: 50%;
+
             background: rgba(0, 0, 0, 0.65);
             color: white;
+
             font-size: 28px;
+
             user-select: none;
             -webkit-user-select: none;
+
             touch-action: none;
+
             pointer-events: auto;
+
+            cursor: pointer;
         }
+
+        .control:active {
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        /* CRUCETA */
 
         .dpad {
             display: grid;
+
             grid-template-columns: 60px 60px 60px;
             grid-template-rows: 60px 60px 60px;
         }
@@ -91,103 +143,255 @@
             grid-row: 2;
         }
 
+        /* BOTONES */
+
         .buttons {
             display: flex;
+
             align-items: center;
+
             gap: 10px;
         }
 
         .jump {
             width: 70px;
             height: 70px;
+
             font-size: 24px;
         }
 
         .start {
-            width: 55px;
+            width: 70px;
             height: 45px;
+
             border-radius: 10px;
+
             font-size: 14px;
         }
 
-        .control:active {
-            background: rgba(255, 255, 255, 0.45);
+        /* CUANDO ESTÁ EN PANTALLA COMPLETA */
+
+        :fullscreen #toggle-controls {
+            display: none !important;
         }
 
-        /* OCULTAR CONTROLES EN PC */
-        @media (min-width: 768px) {
-            #controls {
-                display: none;
-            }
+        :-webkit-full-screen #toggle-controls {
+            display: none !important;
         }
     </style>
 </head>
 
 <body>
 
-    <button id="fullscreen">⛶</button>
+<div id="game-container">
 
+    <!-- JUEGO -->
     <iframe
         id="game"
         src="https://ext.minijuegosgratis.com/sonic-m-plus/index.html"
         allowfullscreen>
     </iframe>
 
+
+    <!-- BOTÓN CONTROLES -->
+    <button id="toggle-controls">
+        🎮 Controles
+    </button>
+
+
+    <!-- BOTÓN PANTALLA COMPLETA -->
+    <button id="fullscreen">
+        ⛶
+    </button>
+
+
+    <!-- CONTROLES -->
     <div id="controls">
 
+        <!-- CRUCETA -->
         <div class="dpad">
-            <button class="control up" data-key="ArrowUp">⬆️</button>
-            <button class="control left" data-key="ArrowLeft">⬅️</button>
-            <button class="control down" data-key="ArrowDown">⬇️</button>
-            <button class="control right" data-key="ArrowRight">➡️</button>
+
+            <button class="control up" data-key="ArrowUp">
+                ⬆️
+            </button>
+
+            <button class="control left" data-key="ArrowLeft">
+                ⬅️
+            </button>
+
+            <button class="control down" data-key="ArrowDown">
+                ⬇️
+            </button>
+
+            <button class="control right" data-key="ArrowRight">
+                ➡️
+            </button>
+
         </div>
 
+
+        <!-- BOTONES -->
         <div class="buttons">
-            <button class="control start" data-key="Enter">START</button>
-            <button class="control jump" data-key="KeyA">A</button>
+
+            <button class="control start" data-key="Enter">
+                START
+            </button>
+
+            <button class="control jump" data-key="KeyA">
+                A
+            </button>
+
         </div>
 
     </div>
 
-    <script>
-        const game = document.getElementById("game");
+</div>
 
-        /* Pantalla completa */
-        document.getElementById("fullscreen").addEventListener("click", () => {
-            if (game.requestFullscreen) {
-                game.requestFullscreen();
-            } else if (game.webkitRequestFullscreen) {
-                game.webkitRequestFullscreen();
-            }
-        });
 
-        /* Controles táctiles */
-        const buttons = document.querySelectorAll(".control");
+<script>
 
-        buttons.forEach(button => {
+    const container = document.getElementById("game-container");
 
-            const key = button.dataset.key;
+    const game = document.getElementById("game");
 
-            function press() {
-                game.contentWindow.postMessage({
-                    type: "keydown",
-                    key: key
-                }, "*");
-            }
+    const controls = document.getElementById("controls");
 
-            function release() {
-                game.contentWindow.postMessage({
-                    type: "keyup",
-                    key: key
-                }, "*");
-            }
+    const toggleControls =
+        document.getElementById("toggle-controls");
 
-            button.addEventListener("pointerdown", press);
-            button.addEventListener("pointerup", release);
-            button.addEventListener("pointercancel", release);
-            button.addEventListener("pointerleave", release);
-        });
-    </script>
+    const fullscreen =
+        document.getElementById("fullscreen");
+
+
+    /* MOSTRAR / OCULTAR CONTROLES */
+
+    toggleControls.addEventListener("click", () => {
+
+        if (controls.style.display === "flex") {
+
+            controls.style.display = "none";
+
+        } else {
+
+            controls.style.display = "flex";
+
+        }
+
+    });
+
+
+    /* PANTALLA COMPLETA */
+
+    fullscreen.addEventListener("click", () => {
+
+        if (container.requestFullscreen) {
+
+            container.requestFullscreen();
+
+        } else if (container.webkitRequestFullscreen) {
+
+            container.webkitRequestFullscreen();
+
+        }
+
+    });
+
+
+    /* ACTUALIZAR BOTÓN AL ENTRAR/SALIR DE PANTALLA COMPLETA */
+
+    function updateFullscreen() {
+
+        if (
+            document.fullscreenElement ||
+            document.webkitFullscreenElement
+        ) {
+
+            toggleControls.style.display = "none";
+
+        } else {
+
+            toggleControls.style.display = "block";
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "fullscreenchange",
+        updateFullscreen
+    );
+
+    document.addEventListener(
+        "webkitfullscreenchange",
+        updateFullscreen
+    );
+
+
+    /* CONTROLES */
+
+    const buttons =
+        document.querySelectorAll(".control");
+
+
+    buttons.forEach(button => {
+
+        const key = button.dataset.key;
+
+
+        function press(event) {
+
+            event.preventDefault();
+
+            game.contentWindow.postMessage({
+
+                type: "keydown",
+
+                key: key
+
+            }, "*");
+
+        }
+
+
+        function release(event) {
+
+            event.preventDefault();
+
+            game.contentWindow.postMessage({
+
+                type: "keyup",
+
+                key: key
+
+            }, "*");
+
+        }
+
+
+        button.addEventListener(
+            "pointerdown",
+            press
+        );
+
+        button.addEventListener(
+            "pointerup",
+            release
+        );
+
+        button.addEventListener(
+            "pointercancel",
+            release
+        );
+
+        button.addEventListener(
+            "pointerleave",
+            release
+        );
+
+    });
+
+</script>
 
 </body>
 </html>
