@@ -22,19 +22,103 @@
             border: none;
         }
 
+        /* Botón de pantalla completa */
         #fullscreen {
             position: fixed;
             top: 10px;
             right: 10px;
             z-index: 9999;
             padding: 10px 14px;
-            font-size: 18px;
+            font-size: 20px;
             border: none;
             border-radius: 8px;
             background: black;
             color: white;
             opacity: 0.8;
-            cursor: pointer;
+        }
+
+        /* CONTROLES MÓVILES */
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            pointer-events: none;
+        }
+
+        .control {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            border: 2px solid white;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            font-size: 28px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            pointer-events: auto;
+        }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 60px 60px 60px;
+        }
+
+        .dpad .up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .dpad .left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .dpad .down {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .dpad .right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .jump {
+            width: 70px;
+            height: 70px;
+            font-size: 24px;
+        }
+
+        .start {
+            width: 55px;
+            height: 45px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .control:active {
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        /* OCULTAR CONTROLES EN PC */
+        @media (min-width: 768px) {
+            #controls {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -49,16 +133,59 @@
         allowfullscreen>
     </iframe>
 
-    <script>
-        const boton = document.getElementById("fullscreen");
-        const juego = document.getElementById("game");
+    <div id="controls">
 
-        boton.addEventListener("click", function () {
-            if (juego.requestFullscreen) {
-                juego.requestFullscreen();
-            } else if (juego.webkitRequestFullscreen) {
-                juego.webkitRequestFullscreen();
+        <div class="dpad">
+            <button class="control up" data-key="ArrowUp">⬆️</button>
+            <button class="control left" data-key="ArrowLeft">⬅️</button>
+            <button class="control down" data-key="ArrowDown">⬇️</button>
+            <button class="control right" data-key="ArrowRight">➡️</button>
+        </div>
+
+        <div class="buttons">
+            <button class="control start" data-key="Enter">START</button>
+            <button class="control jump" data-key="KeyA">A</button>
+        </div>
+
+    </div>
+
+    <script>
+        const game = document.getElementById("game");
+
+        /* Pantalla completa */
+        document.getElementById("fullscreen").addEventListener("click", () => {
+            if (game.requestFullscreen) {
+                game.requestFullscreen();
+            } else if (game.webkitRequestFullscreen) {
+                game.webkitRequestFullscreen();
             }
+        });
+
+        /* Controles táctiles */
+        const buttons = document.querySelectorAll(".control");
+
+        buttons.forEach(button => {
+
+            const key = button.dataset.key;
+
+            function press() {
+                game.contentWindow.postMessage({
+                    type: "keydown",
+                    key: key
+                }, "*");
+            }
+
+            function release() {
+                game.contentWindow.postMessage({
+                    type: "keyup",
+                    key: key
+                }, "*");
+            }
+
+            button.addEventListener("pointerdown", press);
+            button.addEventListener("pointerup", release);
+            button.addEventListener("pointercancel", release);
+            button.addEventListener("pointerleave", release);
         });
     </script>
 
