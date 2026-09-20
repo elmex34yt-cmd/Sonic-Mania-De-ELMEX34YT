@@ -14,11 +14,14 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100%;
-            background: black;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
+            background: black;
         }
 
         iframe {
@@ -27,7 +30,9 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            border: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
             display: block;
         }
     </style>
@@ -36,26 +41,9 @@
 <body>
 
     <iframe
-        id="game"
         src="https://ext.minijuegosgratis.com/sonic-m-plus/index.html"
         allowfullscreen>
     </iframe>
-
-    <script>
-        const game = document.getElementById("game");
-
-        function activarFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen?.();
-            }
-
-            document.removeEventListener("click", activarFullscreen);
-            document.removeEventListener("touchstart", activarFullscreen);
-        }
-
-        document.addEventListener("click", activarFullscreen);
-        document.addEventListener("touchstart", activarFullscreen);
-    </script>
 
 </body>
 </html>
